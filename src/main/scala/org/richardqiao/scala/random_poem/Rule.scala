@@ -9,8 +9,11 @@ object Rule{
   var props: java.util.Properties = null
   
   def main(args: Array[String]): Unit = {
-    val poem = new Rule("POEM")
-    println(poem.randomGen)
+    println(Rule("POEM").randomGen)
+  }
+  
+  def apply(rule: String): Rule = {
+    new Rule(rule)
   }
 }
 
