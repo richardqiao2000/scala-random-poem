@@ -6,7 +6,8 @@ import scala.collection.mutable._
 
 object Rule{
   val map: Map[String, Rule] = new HashMap[String, Rule]()
-  var props: java.util.Properties = null
+  val props: java.util.Properties = new java.util.Properties()
+  props.load(new FileInputStream("src/main/resources/rules.properties"))
   
   def main(args: Array[String]): Unit = {
     println(Rule("POEM").randomGen)
@@ -30,15 +31,10 @@ class Rule {
   
   def this(ruleName: String){
     this()
-    if(Rule.props == null){
-      Rule.props = new java.util.Properties()
-      Rule.props.load(new FileInputStream("src/main/resources/rules.properties"))
-    }
     val rule = Rule.props.getProperty(ruleName)
     if(rule != null){
       Rule.map += (ruleName -> this)
-      rules = rule.split(' ').map(str => {
-        val tmp = str.trim
+      rules = rule.split(' ').map(_.trim).map(tmp => {
         if(tmp.startsWith("$") || tmp.startsWith("<")){
           val tmp2 = tmp.replace("<", "").replace(">", "")
           getRules(tmp2)
@@ -51,8 +47,7 @@ class Rule {
   }
   
   def getRules(rule: String): Array[Rule] = {
-    rule.split("\\|").map(str => {
-      val tmp = str.trim
+    rule.split("\\|").map(_.trim).map(tmp => {
       if(Rule.map.contains(tmp)){
         Rule.map(tmp)
       }else{
